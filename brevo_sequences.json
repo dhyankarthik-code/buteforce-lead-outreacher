@@ -1,0 +1,137 @@
+{
+  "_meta": {
+    "project": "Buteforce Lead Outreacher",
+    "purpose": "Brevo email sequence definitions for Tier 2/3 leads",
+    "sending_identity": "Google Workspace SMTP via Brevo relay",
+    "daily_cap": 300,
+    "gdpr_note": "All EU leads (gdpr_flag=TRUE) must include opt-out footer. Review before sending.",
+    "placeholders": [
+      "{{contact_name}}",
+      "{{company}}",
+      "{{project_name}}",
+      "{{job_type}}",
+      "{{spent}}",
+      "{{sender_name}}",
+      "{{sender_title}}"
+    ]
+  },
+
+  "segments": {
+
+    "voice_ai_rag": {
+      "label": "Voice AI / RAG",
+      "match_keywords": ["voice", "rag", "livekit", "speech", "conversational", "chatbot"],
+      "audit_hook": "We audit voice agent architectures for latency, failover, and prompt injection vulnerabilities.",
+      "steps": [
+        {
+          "step": 1,
+          "day": 0,
+          "channel": "email",
+          "subject": "Your {{project_name}} project — a quick note from Buteforce",
+          "body": "Hi {{contact_name}},\n\nI came across your Upwork listing for {{project_name}} and noticed the work you did with voice AI / RAG systems at {{company}}.\n\nBuilding production-grade conversational AI is deceptively hard — most teams hit the same three walls: latency spikes under load, retrieval hallucinations, and failover gaps when the LLM provider throttles.\n\nWe're Buteforce, an AI engineering studio that specialises in exactly this. We work with companies that have already shipped v1 and need it to be enterprise-reliable.\n\nWould a 15-minute call make sense? Happy to look at your current architecture first and come with specific observations rather than a sales pitch.\n\n{{sender_name}}\n{{sender_title}}, Buteforce\nhttps://buteforce.com\n\n---\nYou're receiving this because {{company}} has published AI engineering roles. Unsubscribe: [unsubscribe_link]"
+        },
+        {
+          "step": 2,
+          "day": 3,
+          "channel": "email",
+          "subject": "One thing most RAG pipelines get wrong (relevant to {{company}})",
+          "body": "Hi {{contact_name}},\n\nFollowing up on my last note. Wanted to share something concrete rather than just checking in.\n\nThe most common failure we see in production RAG systems: chunk boundaries that break semantic meaning. It kills retrieval precision silently — the system looks fine in demos but degrades badly on real user queries.\n\nWe wrote a short internal guide on fixing this without a full reindex. Happy to share it — no strings attached.\n\nAlso, if you're exploring extending your {{project_name}} work, we're taking on a couple of new architecture engagements this quarter.\n\n{{sender_name}}\nButeforce\nhttps://buteforce.com\n\n---\nUnsubscribe: [unsubscribe_link]"
+        },
+        {
+          "step": 3,
+          "day": 7,
+          "channel": "email",
+          "subject": "Free AI Architecture Audit — offer for {{company}}",
+          "body": "Hi {{contact_name}},\n\nLast note from me on this thread.\n\nWe're offering a free Architectural AI Audit for a small number of companies this quarter. Specifically:\n- Review your current voice agent / RAG architecture\n- Identify latency, failover, and prompt injection risks\n- Deliver a written findings report — no sales call required at the end\n\nGiven the scale of what you've already built at {{company}}, I think you'd find the audit genuinely useful.\n\nInterested? Just reply and we'll set it up.\n\n{{sender_name}}\nButeforce | AI Engineering Studio\nhttps://buteforce.com/ai-audit\n\n---\nUnsubscribe: [unsubscribe_link]"
+        }
+      ]
+    },
+
+    "n8n_langchain": {
+      "label": "N8N / LangChain / Automation",
+      "match_keywords": ["n8n", "langchain", "langgraph", "automation", "workflow", "make", "zapier", "agentic"],
+      "audit_hook": "We audit automation workflows for data leakage and webhook security exposures.",
+      "steps": [
+        {
+          "step": 1,
+          "day": 0,
+          "channel": "email",
+          "subject": "{{project_name}} — Buteforce wanted to say hello",
+          "body": "Hi {{contact_name}},\n\nI spotted your {{project_name}} project on Upwork and it caught my eye — we work almost exclusively with teams building serious automation and agentic systems.\n\nMost N8N / LangChain builds we see are technically working but architecturally fragile: hardcoded credentials in workflow configs, no circuit breakers on external API calls, and agent loops with no token-budget guardrails.\n\nWe're Buteforce — we come in at the architecture layer, not as extra dev hands.\n\nWorth a quick call to compare notes on what you've built?\n\n{{sender_name}}\n{{sender_title}}, Buteforce\nhttps://buteforce.com\n\n---\nUnsubscribe: [unsubscribe_link]"
+        },
+        {
+          "step": 2,
+          "day": 3,
+          "channel": "email",
+          "subject": "N8N webhook security — something worth checking at {{company}}",
+          "body": "Hi {{contact_name}},\n\nQuick follow-up. One thing we check in every automation audit: are your N8N webhooks exposed without IP allowlisting or HMAC signature verification?\n\nIt's a very common gap — and it means anyone who discovers the webhook URL can trigger your workflows. We've seen this lead to runaway AI spend and data exfiltration in production systems.\n\nHappy to do a free 30-minute webhook security review for {{company}} if you'd like a second set of eyes.\n\n{{sender_name}}\nButeforce\nhttps://buteforce.com\n\n---\nUnsubscribe: [unsubscribe_link]"
+        },
+        {
+          "step": 3,
+          "day": 7,
+          "channel": "email",
+          "subject": "Free Automation Security Audit — {{company}}",
+          "body": "Hi {{contact_name}},\n\nFinal note. We're running a free Architectural AI Audit for automation-heavy teams this quarter. For workflow/agentic builds like {{project_name}}, that means:\n\n- Webhook exposure and authentication review\n- Credential handling audit (env vars, secret stores)\n- Agent loop guardrails and cost runaway prevention\n- Written findings report delivered in 5 business days\n\nNo commitment required. If you want it, just reply.\n\n{{sender_name}}\nButeforce | AI Engineering Studio\nhttps://buteforce.com/ai-audit\n\n---\nUnsubscribe: [unsubscribe_link]"
+        }
+      ]
+    },
+
+    "computer_vision": {
+      "label": "Computer Vision",
+      "match_keywords": ["vision", "cv", "image", "detection", "classification", "orthotics", "quality control"],
+      "audit_hook": "We review CV pipelines for model drift, edge case failures, and deployment bottlenecks.",
+      "steps": [
+        {
+          "step": 1,
+          "day": 0,
+          "channel": "email",
+          "subject": "{{project_name}} — Buteforce intro",
+          "body": "Hi {{contact_name}},\n\nI came across your {{project_name}} project and wanted to reach out — computer vision systems in production are one of our specialties at Buteforce.\n\nThe hardest part is rarely the initial model accuracy. It's production: model drift as real-world data distribution shifts, edge-case failures your test set never surfaced, and inference latency that works on a GPU but fails on the actual deployment target.\n\nWe help teams build CV systems that are architecturally sound from the start — not just accurate in the lab.\n\nWould a short call to discuss {{company}}'s current setup make sense?\n\n{{sender_name}}\n{{sender_title}}, Buteforce\nhttps://buteforce.com\n\n---\nUnsubscribe: [unsubscribe_link]"
+        },
+        {
+          "step": 2,
+          "day": 3,
+          "channel": "email",
+          "subject": "Model drift monitoring — are you tracking it at {{company}}?",
+          "body": "Hi {{contact_name}},\n\nFollowing up. The most underestimated risk in production CV systems is silent model drift — the model degrades gradually as real-world inputs shift away from training distribution, and nobody notices until defect/error rates spike.\n\nA proper drift monitoring setup catches this early. We've implemented it for several clients and it's become one of the highest-ROI things we deliver.\n\nIf {{company}} isn't tracking prediction confidence distribution over time, it's worth a conversation.\n\n{{sender_name}}\nButeforce\nhttps://buteforce.com\n\n---\nUnsubscribe: [unsubscribe_link]"
+        },
+        {
+          "step": 3,
+          "day": 7,
+          "channel": "email",
+          "subject": "Free CV Pipeline Audit — offer for {{company}}",
+          "body": "Hi {{contact_name}},\n\nLast message. We're offering a free CV Pipeline Audit for a few teams this quarter:\n\n- Model drift risk assessment\n- Edge case and distribution shift exposure review\n- Inference deployment architecture check\n- Written findings in 5 business days\n\nBased on what you've built with {{project_name}}, I think you'd get real value from it.\n\nJust reply if you want to move forward.\n\n{{sender_name}}\nButeforce | AI Engineering Studio\nhttps://buteforce.com/ai-audit\n\n---\nUnsubscribe: [unsubscribe_link]"
+        }
+      ]
+    },
+
+    "fullstack_ai": {
+      "label": "Full-Stack AI / General",
+      "match_keywords": ["full-stack", "fullstack", "engineer", "developer", "web", "wordpress", "backend", "saas"],
+      "audit_hook": "We audit AI codebases for hardcoded keys, insecure endpoints, and scalability ceilings.",
+      "steps": [
+        {
+          "step": 1,
+          "day": 0,
+          "channel": "email",
+          "subject": "{{project_name}} — reaching out from Buteforce",
+          "body": "Hi {{contact_name}},\n\nI came across your {{project_name}} listing on Upwork and wanted to introduce Buteforce. We're an AI engineering studio — we work with companies that have already shipped AI-powered products and need architecture-level thinking to scale them safely.\n\nThe most common gaps we see at this stage: hardcoded API keys in deployed environments, no rate limiting on AI endpoints, and vendor lock-in that becomes painful at scale.\n\nWould it be useful to compare notes on what {{company}} has built and where the gaps might be?\n\n{{sender_name}}\n{{sender_title}}, Buteforce\nhttps://buteforce.com\n\n---\nUnsubscribe: [unsubscribe_link]"
+        },
+        {
+          "step": 2,
+          "day": 3,
+          "channel": "email",
+          "subject": "AI security gaps most teams miss — relevant to {{company}}",
+          "body": "Hi {{contact_name}},\n\nFollowing up with something concrete. The three AI security issues we find most often in full-stack AI products:\n\n1. API keys in frontend bundles or server logs\n2. No prompt injection guardrails on user-facing LLM calls\n3. Unthrottled AI endpoints that can be abused to run up your OpenAI bill\n\nAny of these ring a bell for {{company}}'s current setup? Happy to talk through mitigations.\n\n{{sender_name}}\nButeforce\nhttps://buteforce.com\n\n---\nUnsubscribe: [unsubscribe_link]"
+        },
+        {
+          "step": 3,
+          "day": 7,
+          "channel": "email",
+          "subject": "Free AI Codebase Audit — {{company}}",
+          "body": "Hi {{contact_name}},\n\nFinal note. We're running free AI Architecture Audits for a small number of companies this quarter. For full-stack AI builds, the audit covers:\n\n- Secret and credential exposure review\n- LLM endpoint security (injection, abuse, throttling)\n- Scalability ceiling identification\n- Written findings report — no commitment required after\n\nIf {{company}} would find this useful, just reply.\n\n{{sender_name}}\nButeforce | AI Engineering Studio\nhttps://buteforce.com/ai-audit\n\n---\nUnsubscribe: [unsubscribe_link]"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,25 @@
+# Secrets — never commit
+.env
+review_app/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Runtime state (now stored in Google Sheets)
+queue.json
+review_app/queue.json
+
+# Lead data CSVs (sensitive — source of truth is Google Sheets)
+*.csv
+
+# Logs
+zlog.txt
+
+# OS
+.DS_Store
+Thumbs.db
