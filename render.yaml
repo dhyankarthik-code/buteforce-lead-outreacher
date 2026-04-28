@@ -25,3 +25,7 @@ services:
         value: 1KghW03YIgrvWhSPzKTgw_uyGU2BcMVtB5nP1tPZUdfQ
       - key: SHEET_NAME
         value: Clients detail
+      - key: IMAP_HOST
+        value: imap.gmail.com
+      - key: IMAP_PORT
+        value: "993"

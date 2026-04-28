@@ -167,6 +167,55 @@ def api_reset(item_id: str):
     return updated
 
 
+# ── Notifications ─────────────────────────────────────────────────────────────
+
+def _run_inbox_check() -> int:
+    from inbox_checker import fetch_replies, classify_reply
+    import notif_store
+    queue      = load_queue()
+    sent_leads = [l for l in queue if l.get("status") == "sent"]
+    new_replies = fetch_replies(sent_leads)
+    for reply in new_replies:
+        c = classify_reply(reply["reply_body"], reply["company"])
+        reply.update(c)
+    return notif_store.merge_replies(new_replies)
+
+
+@app.get("/api/notifications")
+def get_notifications():
+    import notif_store
+    if notif_store.should_check():
+        notif_store.record_check()
+        try:
+            _run_inbox_check()
+        except Exception:
+            pass
+    notifs = notif_store.load_notifications()
+    return {"notifications": notifs, "unread": notif_store.get_unread_count()}
+
+
+@app.post("/api/notifications/check")
+def force_check():
+    import notif_store
+    notif_store.record_check()
+    try:
+        added = _run_inbox_check()
+    except Exception as exc:
+        raise HTTPException(500, f"Inbox check failed: {exc}")
+    notifs = notif_store.load_notifications()
+    return {"notifications": notifs, "unread": notif_store.get_unread_count(), "new": added}
+
+
+@app.put("/api/notifications/{notif_id}/read")
+def read_notification(notif_id: str):
+    import notif_store
+    if notif_id == "all":
+        notif_store.mark_all_read()
+    else:
+        notif_store.mark_read(notif_id)
+    return {"ok": True, "unread": notif_store.get_unread_count()}
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", "8765"))

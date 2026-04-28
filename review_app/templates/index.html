@@ -4,26 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buteforce · Outreach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Tokens: light theme (brand-default per brand_bible.md 2026-04-12) ──── */
+/* ── Design tokens ────────────────────────────────────────────────────────── */
 :root {
-  --bg:          #f7f8fa;
+  --bg:          #f5f6f8;
   --surface:     #ffffff;
   --surface-2:   #eef0f3;
   --border:      #e5e7eb;
   --border-2:    #d1d5db;
-  --text:        #0f172a;
-  --text-2:      #475569;
-  --text-3:      #94a3b8;
+  --text:        #0a0a0a;
+  --text-2:      #4b5563;
+  --text-3:      #9ca3af;
 
   --yellow:      #FFFC01;
-  --yellow-dim:  rgba(255,252,1,.14);
-  --yellow-glow: rgba(255,252,1,.45);
-  --accent:      #FFFC01;
-  --accent-dim:  rgba(255,252,1,.12);
-  --accent-glow: rgba(255,252,1,.12);
+  --yellow-dim:  rgba(255,252,1,.12);
+  --yellow-glow: rgba(255,252,1,.40);
 
   --green:       #16a34a;
   --green-dim:   rgba(22,163,74,.09);
@@ -31,12 +31,15 @@
   --amber-dim:   rgba(180,83,9,.09);
   --red:         #dc2626;
   --red-dim:     rgba(220,38,38,.09);
+  --blue:        #2563eb;
+  --blue-dim:    rgba(37,99,235,.09);
+  --orange:      #ea580c;
+  --orange-dim:  rgba(234,88,12,.09);
 
-  --hover-tint:  rgba(0,0,0,.04);
-  --mono: 'Cascadia Code','JetBrains Mono','Fira Code','SF Mono',ui-monospace,monospace;
+  --hover-tint:  rgba(0,0,0,.035);
+  --mono: 'Cascadia Code','JetBrains Mono','Fira Code',ui-monospace,monospace;
 }
 
-/* ── Tokens: dark theme ───────────────────────────────────────────────────── */
 [data-theme="dark"] {
   --bg:          #07090d;
   --surface:     #0d1018;
@@ -47,20 +50,23 @@
   --text-2:      #7a8099;
   --text-3:      #3a3f52;
   --yellow-dim:  rgba(255,252,1,.07);
-  --yellow-glow: rgba(255,252,1,.20);
-  --accent-dim:  rgba(255,252,1,.07);
-  --accent-glow: rgba(255,252,1,.05);
+  --yellow-glow: rgba(255,252,1,.18);
   --green:       #22c763;
   --green-dim:   rgba(34,199,99,.10);
   --amber:       #f0a500;
   --amber-dim:   rgba(240,165,0,.08);
   --red:         #ef4455;
   --red-dim:     rgba(239,68,85,.08);
+  --blue:        #60a5fa;
+  --blue-dim:    rgba(96,165,250,.09);
+  --orange:      #fb923c;
+  --orange-dim:  rgba(251,146,60,.09);
   --hover-tint:  rgba(255,255,255,.03);
 }
 
+/* ── Base ─────────────────────────────────────────────────────────────────── */
 body {
-  font-family: system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--text);
   height: 100vh;
@@ -69,15 +75,16 @@ body {
   overflow: hidden;
   font-size: 13px;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ── Header ──────────────────────────────────────────────────────────────── */
 header {
-  height: 46px;
+  height: 48px;
   display: flex;
   align-items: center;
   padding: 0 16px;
-  gap: 12px;
+  gap: 10px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
@@ -92,7 +99,7 @@ header {
 }
 
 .brand-logo {
-  height: 26px;
+  height: 24px;
   width: auto;
   object-fit: contain;
   display: block;
@@ -111,19 +118,18 @@ header {
 
 .brand-sub {
   font-size: 11px;
+  font-weight: 600;
   color: var(--text-3);
-  font-weight: 500;
-  letter-spacing: .01em;
+  letter-spacing: .02em;
 }
 
-/* Stats */
 .header-stats {
   display: flex;
   align-items: center;
   gap: 1px;
   margin-left: auto;
   background: var(--border);
-  border-radius: 5px;
+  border-radius: 6px;
   overflow: hidden;
 }
 
@@ -136,14 +142,14 @@ header {
   align-items: center;
   gap: 5px;
   font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
 
-.stat-chip strong { color: var(--text-2); font-weight: 600; }
+.stat-chip strong { color: var(--text-2); font-weight: 700; }
 .stat-chip.s-sent  strong { color: var(--green); }
 .stat-chip.s-skip  strong { color: var(--red); }
 .stat-chip.s-ready strong { color: var(--amber); }
 
-/* Kbd hints */
 .kbd-hints {
   display: flex;
   gap: 10px;
@@ -163,8 +169,9 @@ kbd {
   line-height: 16px;
 }
 
-/* Theme toggle */
-.theme-toggle {
+/* ── Icon buttons (bell, theme) ───────────────────────────────────────────── */
+.icon-btn {
+  position: relative;
   width: 30px;
   height: 30px;
   padding: 0;
@@ -176,10 +183,37 @@ kbd {
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  transition: background .12s, border-color .12s;
+  transition: background .12s, border-color .12s, color .12s;
 }
-.theme-toggle:hover { background: var(--border); }
-.theme-toggle svg { width: 14px; height: 14px; }
+.icon-btn:hover { background: var(--border); color: var(--text); opacity: 1; }
+.icon-btn svg { width: 14px; height: 14px; pointer-events: none; }
+.icon-btn:focus-visible { box-shadow: 0 0 0 2px var(--yellow); outline: none; }
+
+.icon-btn.has-unread {
+  border-color: rgba(255,252,1,.7);
+  background: var(--yellow-dim);
+  color: var(--text);
+}
+
+.notif-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 16px;
+  height: 16px;
+  background: var(--yellow);
+  color: #0a0a0a;
+  font-size: 9px;
+  font-weight: 800;
+  border-radius: 99px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  line-height: 1;
+  letter-spacing: -.01em;
+  font-family: 'Inter', sans-serif;
+}
 
 /* ── Progress bar ─────────────────────────────────────────────────────────── */
 .progress-track {
@@ -192,7 +226,7 @@ kbd {
   height: 100%;
   background: var(--yellow);
   transition: width .5s cubic-bezier(.4,0,.2,1);
-  box-shadow: 0 0 10px var(--yellow-glow);
+  box-shadow: 0 0 8px var(--yellow-glow);
 }
 
 /* ── Layout ───────────────────────────────────────────────────────────────── */
@@ -204,7 +238,7 @@ kbd {
 
 /* ── Sidebar ──────────────────────────────────────────────────────────────── */
 .sidebar {
-  width: 252px;
+  width: 256px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -233,6 +267,7 @@ kbd {
   color: var(--text-2);
   font-variant-numeric: tabular-nums;
   font-family: var(--mono);
+  font-weight: 600;
 }
 
 .lead-list {
@@ -240,7 +275,6 @@ kbd {
   flex: 1;
 }
 
-/* Lead card */
 .lc {
   padding: 11px 14px;
   border-bottom: 1px solid var(--border);
@@ -257,9 +291,9 @@ kbd {
   padding-left: 12px;
 }
 
-.lc.is-noemail { opacity: .35; cursor: default; pointer-events: none; }
-.lc.is-sent    { opacity: .6; }
-.lc.is-skipped { opacity: .5; }
+.lc.is-noemail { opacity: .32; cursor: default; pointer-events: none; }
+.lc.is-sent    { opacity: .58; }
+.lc.is-skipped { opacity: .45; }
 
 .lc-top {
   display: flex;
@@ -308,10 +342,7 @@ kbd {
 .sd-skipped   { background: var(--red); opacity: .5; }
 .sd-noemail   { background: var(--border-2); }
 
-.lc-status {
-  font-size: 10.5px;
-  color: var(--text-3);
-}
+.lc-status { font-size: 10.5px; color: var(--text-3); }
 
 .gdpr-pip {
   width: 4px;
@@ -322,7 +353,7 @@ kbd {
   flex-shrink: 0;
 }
 
-/* ── Main ─────────────────────────────────────────────────────────────────── */
+/* ── Main panel ───────────────────────────────────────────────────────────── */
 .main {
   flex: 1;
   display: flex;
@@ -350,10 +381,9 @@ kbd {
   place-items: center;
 }
 
-.empty-state p { font-size: 13px; }
+.empty-state p     { font-size: 13px; }
 .empty-state small { font-size: 11px; }
 
-/* Lead header bar */
 .lead-bar {
   padding: 13px 20px;
   border-bottom: 1px solid var(--border);
@@ -375,12 +405,11 @@ kbd {
   color: var(--text);
 }
 
-/* Spend tag: brand yellow bg with dark text — works on both themes */
 .spend-tag {
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 800;
-  color: var(--text);
+  color: #0a0a0a;
   background: var(--yellow);
   padding: 2px 10px;
   border-radius: 4px;
@@ -409,14 +438,9 @@ kbd {
   color: var(--text-3);
 }
 
-.meta a {
-  color: var(--text-2);
-  text-decoration: underline;
-  text-decoration-color: var(--border-2);
-}
+.meta a { color: var(--text-2); text-decoration: underline; text-decoration-color: var(--border-2); }
 .meta a:hover { text-decoration-color: var(--text-2); }
 
-/* Alert bars */
 .bar-sent {
   padding: 7px 20px;
   background: var(--green-dim);
@@ -441,9 +465,7 @@ kbd {
   flex-shrink: 0;
 }
 
-[data-theme="dark"] .bar-gdpr {
-  border-bottom-color: rgba(240,165,0,.12);
-}
+[data-theme="dark"] .bar-gdpr { border-bottom-color: rgba(240,165,0,.12); }
 
 .bar-noemail {
   padding: 9px 20px;
@@ -457,7 +479,6 @@ kbd {
   flex-shrink: 0;
 }
 
-/* Compose */
 .compose {
   flex: 1;
   display: flex;
@@ -490,14 +511,10 @@ kbd {
   flex-shrink: 0;
 }
 
-.eh-value {
-  font-size: 12.5px;
-  color: var(--text-2);
-  flex: 1;
-}
+.eh-value { font-size: 12.5px; color: var(--text-2); flex: 1; }
 
 .eh-input {
-  font-family: inherit;
+  font-family: 'Inter', inherit;
   font-size: 13px;
   font-weight: 500;
   color: var(--text);
@@ -543,7 +560,6 @@ kbd {
   pointer-events: none;
 }
 
-/* Notes */
 .notes-strip {
   height: 34px;
   display: flex;
@@ -566,7 +582,7 @@ kbd {
 
 .notes-in {
   flex: 1;
-  font-family: inherit;
+  font-family: 'Inter', inherit;
   font-size: 12px;
   color: var(--text-2);
   background: none;
@@ -575,7 +591,6 @@ kbd {
 }
 .notes-in::placeholder { color: var(--text-3); }
 
-/* Action bar */
 .action-bar {
   height: 50px;
   display: flex;
@@ -589,9 +604,9 @@ kbd {
 
 .ab-spacer { flex: 1; }
 
-/* Buttons */
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
 button {
-  font-family: inherit;
+  font-family: 'Inter', inherit;
   font-size: 12px;
   font-weight: 600;
   padding: 0 14px;
@@ -619,10 +634,9 @@ button:focus-visible { box-shadow: 0 0 0 2px var(--yellow); }
 }
 .btn-reset:hover:not(:disabled) { color: var(--text-2); opacity: 1; }
 
-/* Brand-yellow generate button — the hero action */
 .btn-generate {
   background: var(--yellow);
-  color: #0f172a;
+  color: #0a0a0a;
   font-weight: 700;
 }
 
@@ -647,35 +661,30 @@ button:focus-visible { box-shadow: 0 0 0 2px var(--yellow); }
 }
 [data-theme="dark"] .btn-send { color: #071a0e; }
 
-/* Keyboard shortcut badge inside buttons */
 .bk {
   font-family: var(--mono);
   font-size: 9px;
-  opacity: .55;
-  background: rgba(15,23,42,.12);
+  opacity: .5;
+  background: rgba(10,10,10,.1);
   padding: 1px 4px;
   border-radius: 3px;
   line-height: 14px;
 }
-[data-theme="dark"] .bk { background: rgba(255,255,255,.12); }
+[data-theme="dark"] .bk { background: rgba(255,255,255,.1); }
 
-/* Loading spinner */
 .spin {
   width: 12px;
   height: 12px;
-  border: 2px solid rgba(15,23,42,.2);
-  border-top-color: #0f172a;
+  border: 2px solid rgba(10,10,10,.2);
+  border-top-color: #0a0a0a;
   border-radius: 50%;
   animation: spin .6s linear infinite;
   flex-shrink: 0;
 }
-[data-theme="dark"] .spin {
-  border: 2px solid rgba(255,255,255,.2);
-  border-top-color: white;
-}
+[data-theme="dark"] .spin { border: 2px solid rgba(255,255,255,.2); border-top-color: white; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Toast */
+/* ── Toast ────────────────────────────────────────────────────────────────── */
 #toast {
   position: fixed;
   bottom: 18px;
@@ -696,11 +705,330 @@ button:focus-visible { box-shadow: 0 0 0 2px var(--yellow); }
 #toast.error   { background: var(--red-dim);   border: 1px solid rgba(220,38,38,.25); color: var(--red); }
 #toast.info    { background: var(--surface-2); border: 1px solid var(--border-2);    color: var(--text-2); }
 
-/* Scrollbar */
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   NOTIFICATION CENTER
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Notification panel (dropdown) ──────────────────────────────────────── */
+.notif-panel {
+  position: fixed;
+  top: 50px;
+  right: 8px;
+  width: 384px;
+  max-height: calc(100vh - 68px);
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.12), 0 2px 10px rgba(0,0,0,.06);
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+[data-theme="dark"] .notif-panel {
+  box-shadow: 0 8px 40px rgba(0,0,0,.4), 0 2px 10px rgba(0,0,0,.2);
+}
+
+.np-head {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.np-title {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--text-3);
+  flex: 1;
+}
+
+.np-actions { display: flex; gap: 5px; }
+
+.np-btn {
+  font-family: 'Inter', inherit;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 0 9px;
+  height: 24px;
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background .1s, color .1s;
+  white-space: nowrap;
+}
+.np-btn:hover:not(:disabled) { background: var(--border); color: var(--text); opacity: 1; }
+.np-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.np-list { overflow-y: auto; flex: 1; }
+
+.np-empty {
+  padding: 36px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-3);
+  font-size: 12px;
+  text-align: center;
+}
+.np-empty svg { opacity: .5; }
+
+/* ── Notification item ────────────────────────────────────────────────────── */
+.ni {
+  padding: 11px 14px 11px 22px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  position: relative;
+  transition: background .1s;
+}
+.ni:hover { background: var(--hover-tint); }
+.ni.is-read { opacity: .52; }
+
+.ni-unread-dot {
+  position: absolute;
+  left: 9px;
+  top: 16px;
+  width: 5px;
+  height: 5px;
+  background: var(--yellow);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ni-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ni-company {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  letter-spacing: -.01em;
+}
+
+/* ── Classification badges ────────────────────────────────────────────────── */
+.cls-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 99px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  line-height: 1.4;
+}
+.cls-interested        { background: var(--green-dim);  color: var(--green); }
+.cls-meeting_requested { background: rgba(180,83,9,.10); color: var(--amber); }
+.cls-question          { background: var(--blue-dim);   color: var(--blue); }
+.cls-not_interested    { background: var(--red-dim);    color: var(--red); }
+.cls-out_of_office     { background: var(--surface-2);  color: var(--text-2); }
+.cls-unsubscribe       { background: var(--orange-dim); color: var(--orange); }
+.cls-other             { background: var(--surface-2);  color: var(--text-3); }
+
+.ni-preview {
+  font-size: 11.5px;
+  color: var(--text-2);
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  margin-bottom: 5px;
+}
+
+.ni-meta {
+  font-size: 10.5px;
+  color: var(--text-3);
+  font-family: var(--mono);
+  letter-spacing: -.01em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   THREAD MODAL
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.thread-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.32);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(3px);
+}
+
+.thread-modal {
+  background: var(--surface);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 660px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.22);
+  border: 1px solid var(--border-2);
+}
+
+.tm-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 10px;
+}
+
+.tm-head-left { display: flex; align-items: center; gap: 10px; }
+
+.tm-company {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.02em;
+}
+
+.tm-close {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: 5px;
+  color: var(--text-2);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: background .1s;
+}
+.tm-close:hover { background: var(--border); opacity: 1; }
+.tm-close svg { width: 14px; height: 14px; }
+
+.tm-body {
+  padding: 16px 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.tm-email-card {
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 12px 14px;
+  background: var(--bg);
+}
+.tm-outreach { border-left: 3px solid var(--border-2); }
+.tm-reply    { border-left: 3px solid var(--green); }
+
+.tm-card-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--text-3);
+  margin-bottom: 7px;
+}
+
+.tm-card-subject {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+  letter-spacing: -.01em;
+}
+
+.tm-card-meta {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 9px;
+  font-family: var(--mono);
+}
+
+.tm-card-body {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.75;
+  white-space: pre-wrap;
+  max-height: 240px;
+  overflow-y: auto;
+  font-family: var(--mono);
+}
+
+.tm-arrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--text-3);
+  padding: 0 4px;
+  font-weight: 500;
+}
+
+.tm-ai-card {
+  background: var(--yellow-dim);
+  border: 1px solid rgba(255,252,1,.28);
+  border-radius: 7px;
+  padding: 12px 14px;
+}
+[data-theme="dark"] .tm-ai-card { border-color: rgba(255,252,1,.10); }
+
+.tm-ai-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+.tm-ai-label svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+.tm-ai-reason {
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.55;
+}
+
+.tm-ai-action {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
 </style>
 </head>
 <body>
@@ -722,7 +1050,17 @@ button:focus-visible { box-shadow: 0 0 0 2px var(--yellow); }
     <span><kbd>S</kbd> skip</span>
   </div>
 
-  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark theme" aria-label="Toggle theme">
+  <!-- Notification bell -->
+  <button class="icon-btn" id="notifBtn" onclick="toggleNotifPanel()" aria-label="Reply notifications">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+    <span class="notif-badge" id="notifBadge">0</span>
+  </button>
+
+  <!-- Theme toggle -->
+  <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
     <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round"></svg>
   </button>
@@ -730,6 +1068,30 @@ button:focus-visible { box-shadow: 0 0 0 2px var(--yellow); }
 
 <div class="progress-track">
   <div class="progress-fill" id="progressFill" style="width:0"></div>
+</div>
+
+<!-- ── Notification panel ──────────────────────────────────────────────── -->
+<div class="notif-panel" id="notifPanel">
+  <div class="np-head">
+    <span class="np-title">Reply Inbox</span>
+    <div class="np-actions">
+      <button class="np-btn" id="checkNowBtn" onclick="checkNow()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Check now
+      </button>
+      <button class="np-btn" onclick="markAllRead()">✓ All read</button>
+    </div>
+  </div>
+  <div class="np-list" id="notifList"></div>
+</div>
+
+<!-- ── Thread modal ────────────────────────────────────────────────────── -->
+<div class="thread-overlay" id="threadOverlay" onclick="handleOverlayClick(event)">
+  <div class="thread-modal">
+    <div id="threadContent"></div>
+  </div>
 </div>
 
 <div class="layout">
@@ -762,36 +1124,38 @@ button:focus-visible { box-shadow: 0 0 0 2px var(--yellow); }
 'use strict';
 
 /* ── Theme ────────────────────────────────────────────────────────────────── */
-const MOON_SVG = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-const SUN_SVG  = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+const MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+const SUN  = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
 
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   const icon = document.getElementById('themeIcon');
-  if (icon) icon.innerHTML = theme === 'dark' ? SUN_SVG : MOON_SVG;
+  if (icon) icon.innerHTML = theme === 'dark' ? SUN : MOON;
 }
 
 function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
-  const next    = current === 'dark' ? 'light' : 'dark';
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   localStorage.setItem('theme', next);
   applyTheme(next);
 }
 
-/* Apply saved theme immediately (before render) */
 applyTheme(localStorage.getItem('theme') || 'light');
 
-
 /* ── App state ────────────────────────────────────────────────────────────── */
-let queue   = [];
-let current = null;
+let queue         = [];
+let current       = null;
+let notifications = [];
+let notifOpen     = false;
 
 /* ── Boot ─────────────────────────────────────────────────────────────────── */
 async function boot() {
   try {
-    const data = await api('GET', '/api/queue');
-    queue = data.queue;
-    applyStats(data.stats);
+    const [qData] = await Promise.all([
+      api('GET', '/api/queue'),
+      loadNotifications(),
+    ]);
+    queue = qData.queue;
+    applyStats(qData.stats);
     renderList();
   } catch (e) {
     toast('Could not load queue: ' + e.message, 'error');
@@ -801,11 +1165,11 @@ async function boot() {
 /* ── Stats ────────────────────────────────────────────────────────────────── */
 function applyStats(s) {
   document.getElementById('statsBar').innerHTML = `
-    <div class="stat-chip"><strong>${s.pending    ?? 0}</strong> pending</div>
-    <div class="stat-chip s-ready"><strong>${s.generated  ?? 0}</strong> ready</div>
-    <div class="stat-chip s-sent"><strong>${s.sent       ?? 0}</strong> sent</div>
-    <div class="stat-chip s-skip"><strong>${s.skipped    ?? 0}</strong> skipped</div>
-    <div class="stat-chip"><strong>${s.no_email   ?? 0}</strong> no email</div>
+    <div class="stat-chip"><strong>${s.pending   ?? 0}</strong> pending</div>
+    <div class="stat-chip s-ready"><strong>${s.generated ?? 0}</strong> ready</div>
+    <div class="stat-chip s-sent"><strong>${s.sent      ?? 0}</strong> sent</div>
+    <div class="stat-chip s-skip"><strong>${s.skipped   ?? 0}</strong> skipped</div>
+    <div class="stat-chip"><strong>${s.no_email  ?? 0}</strong> no email</div>
   `;
   const actionable = (s.pending ?? 0) + (s.generated ?? 0) + (s.sent ?? 0) + (s.skipped ?? 0);
   const done       = (s.sent ?? 0) + (s.skipped ?? 0);
@@ -816,10 +1180,7 @@ function applyStats(s) {
 
 /* ── Sidebar ──────────────────────────────────────────────────────────────── */
 function renderList() {
-  const STATUS_LABELS = {
-    pending: 'Pending', generated: 'Draft ready',
-    sent: 'Sent', skipped: 'Skipped', noemail: 'No email'
-  };
+  const LABELS = { pending: 'Pending', generated: 'Draft ready', sent: 'Sent', skipped: 'Skipped', noemail: 'No email' };
   document.getElementById('leadList').innerHTML = queue.map(item => {
     const hasEmail = !!item.email;
     const key      = !hasEmail ? 'noemail' : item.status;
@@ -833,7 +1194,7 @@ function renderList() {
       </div>
       <div class="lc-bottom">
         <div class="status-dot sd-${key}"></div>
-        <span class="lc-status">${STATUS_LABELS[key] ?? key}</span>
+        <span class="lc-status">${LABELS[key] ?? key}</span>
         ${gdpr}
       </div>
     </div>`;
@@ -858,23 +1219,15 @@ function renderMain(item) {
   const isGDPR     = item.gdpr_flag === 'TRUE';
 
   let alerts = '';
-  if (isSent)
-    alerts += `<div class="bar-sent">&#10003; Sent to ${x(item.email)} · ${x(item.sent_at || '')}</div>`;
-  if (!hasEmail)
-    alerts += `<div class="bar-noemail">&#9888; No email address — enrich this lead first</div>`;
-  if (isGDPR && !isSent)
-    alerts += `<div class="bar-gdpr">&#9888; EU lead (${x(item.country)}) — replace [unsubscribe_link] before sending</div>`;
+  if (isSent)    alerts += `<div class="bar-sent">&#10003; Sent to ${x(item.email)} · ${x(item.sent_at || '')}</div>`;
+  if (!hasEmail) alerts += `<div class="bar-noemail">&#9888; No email address — enrich this lead first</div>`;
+  if (isGDPR && !isSent) alerts += `<div class="bar-gdpr">&#9888; EU lead (${x(item.country)}) — replace [unsubscribe_link] before sending</div>`;
 
-  const liLink  = item.linkedin
-    ? `<div class="meta"><span class="meta-k">LI</span><a href="${x(item.linkedin)}" target="_blank">Profile</a></div>` : '';
-  const jobLink = item.job_link
-    ? `<div class="meta"><span class="meta-k">Job</span><a href="${x(item.job_link)}" target="_blank">${x(item.project_name || 'View')}</a></div>` : '';
-  const gapNote = item.missing_data
-    ? `<div class="meta" style="color:var(--amber)"><span class="meta-k">Gap</span>${x(item.missing_data)}</div>` : '';
+  const liLink  = item.linkedin ? `<div class="meta"><span class="meta-k">LI</span><a href="${x(item.linkedin)}" target="_blank">Profile</a></div>` : '';
+  const jobLink = item.job_link ? `<div class="meta"><span class="meta-k">Job</span><a href="${x(item.job_link)}" target="_blank">${x(item.project_name || 'View')}</a></div>` : '';
+  const gapNote = item.missing_data ? `<div class="meta" style="color:var(--amber)"><span class="meta-k">Gap</span>${x(item.missing_data)}</div>` : '';
 
-  const genLabel  = hasContent
-    ? `Regenerate <span class="bk">G</span>`
-    : `Generate email <span class="bk">G</span>`;
+  const genLabel  = hasContent ? `Regenerate <span class="bk">G</span>` : `Generate email <span class="bk">G</span>`;
   const sendLabel = isSent ? '&#10003; Sent' : `Approve &amp; Send <span class="bk">↵</span>`;
 
   document.getElementById('mainPanel').innerHTML = `
@@ -890,9 +1243,7 @@ function renderMain(item) {
         ${liLink}${jobLink}${gapNote}
       </div>
     </div>
-
     ${alerts}
-
     <div class="compose">
       <div class="email-header">
         <div class="eh-row">
@@ -912,7 +1263,6 @@ function renderMain(item) {
                  ${isSent ? 'readonly' : ''}>
         </div>
       </div>
-
       <div class="body-zone">
         <textarea class="body-ta" id="bodyField"
                   placeholder="Click 'Generate email' to write a personalised email in Buteforce style…"
@@ -920,7 +1270,6 @@ function renderMain(item) {
                   ${isSent ? 'readonly' : ''}>${x(item.body)}</textarea>
         <div class="body-counter" id="bodyCounter"></div>
       </div>
-
       <div class="notes-strip">
         <span class="notes-k">Note</span>
         <input class="notes-in" id="notesField"
@@ -928,20 +1277,19 @@ function renderMain(item) {
                placeholder="Internal note (not sent)…"
                oninput="saveEdits()">
       </div>
-
       <div class="action-bar">
-        <button class="btn-reset"    onclick="resetLead()"    ${isSent ? 'disabled' : ''}>Reset</button>
+        <button class="btn-reset"    onclick="resetLead()"  ${isSent ? 'disabled' : ''}>Reset</button>
         <button class="btn-generate" id="btnGen" onclick="doGenerate()" ${isSent ? 'disabled' : ''}>${genLabel}</button>
         <div class="ab-spacer"></div>
-        <button class="btn-skip"  onclick="doSkip()"  ${isSent || isSkipped ? 'disabled' : ''}>Skip <span class="bk">S</span></button>
-        <button class="btn-send"  id="btnSend" onclick="doSend()" ${!hasContent || isSent || !hasEmail ? 'disabled' : ''}>${sendLabel}</button>
+        <button class="btn-skip" onclick="doSkip()" ${isSent || isSkipped ? 'disabled' : ''}>Skip <span class="bk">S</span></button>
+        <button class="btn-send" id="btnSend" onclick="doSend()" ${!hasContent || isSent || !hasEmail ? 'disabled' : ''}>${sendLabel}</button>
       </div>
     </div>
   `;
   updateCounter();
 }
 
-/* ── Word / char counter ──────────────────────────────────────────────────── */
+/* ── Counter ──────────────────────────────────────────────────────────────── */
 function updateCounter() {
   const ta = document.getElementById('bodyField');
   const el = document.getElementById('bodyCounter');
@@ -950,7 +1298,7 @@ function updateCounter() {
   el.textContent = `${words}w · ${ta.value.length}c`;
 }
 
-/* ── Auto-save (debounced 500ms) ──────────────────────────────────────────── */
+/* ── Auto-save ────────────────────────────────────────────────────────────── */
 let _saveTimer = null;
 function saveEdits() {
   clearTimeout(_saveTimer);
@@ -1012,7 +1360,7 @@ async function doSend() {
   }
 }
 
-/* ── Skip ─────────────────────────────────────────────────────────────────── */
+/* ── Skip / Reset ─────────────────────────────────────────────────────────── */
 async function doSkip() {
   if (!current) return;
   if (!confirm(`Skip ${current.company}? You can reset it later.`)) return;
@@ -1023,7 +1371,6 @@ async function doSkip() {
   toast('Skipped', 'info');
 }
 
-/* ── Reset ────────────────────────────────────────────────────────────────── */
 async function resetLead() {
   if (!current) return;
   if (!confirm(`Reset ${current.company}? This clears the draft.`)) return;
@@ -1037,6 +1384,7 @@ async function resetLead() {
 document.addEventListener('keydown', e => {
   const tag = (e.target?.tagName ?? '').toLowerCase();
   if (tag === 'input' || tag === 'textarea') return;
+  if (e.key === 'Escape') { closeThread(); closeNotifPanel(); return; }
   if (!current?.email) return;
   if (e.key === 'g' || e.key === 'G') { e.preventDefault(); doGenerate(); }
   if (e.key === 's' || e.key === 'S') { e.preventDefault(); doSkip(); }
@@ -1046,7 +1394,224 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ── Helpers ──────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   NOTIFICATION CENTER
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const CLS_LABELS = {
+  interested:        'Interested',
+  meeting_requested: 'Meeting',
+  question:          'Question',
+  not_interested:    'Not interested',
+  out_of_office:     'OOO',
+  unsubscribe:       'Unsubscribe',
+  other:             'Other',
+};
+
+async function loadNotifications() {
+  try {
+    const data = await api('GET', '/api/notifications');
+    notifications = data.notifications || [];
+    renderNotifBadge(data.unread || 0);
+    if (notifOpen) renderNotifList();
+  } catch (_) { /* non-critical */ }
+}
+
+function renderNotifBadge(count) {
+  const btn   = document.getElementById('notifBtn');
+  const badge = document.getElementById('notifBadge');
+  if (!badge || !btn) return;
+  if (count > 0) {
+    badge.textContent    = count > 99 ? '99+' : String(count);
+    badge.style.display  = 'flex';
+    btn.classList.add('has-unread');
+  } else {
+    badge.style.display  = 'none';
+    btn.classList.remove('has-unread');
+  }
+}
+
+function toggleNotifPanel() {
+  notifOpen ? closeNotifPanel() : openNotifPanel();
+}
+
+function openNotifPanel() {
+  notifOpen = true;
+  const panel = document.getElementById('notifPanel');
+  if (panel) { panel.style.display = 'flex'; renderNotifList(); }
+}
+
+function closeNotifPanel() {
+  notifOpen = false;
+  const panel = document.getElementById('notifPanel');
+  if (panel) panel.style.display = 'none';
+}
+
+function renderNotifList() {
+  const list = document.getElementById('notifList');
+  if (!list) return;
+
+  if (!notifications.length) {
+    list.innerHTML = `
+      <div class="np-empty">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <p>No replies yet</p>
+        <small>Replies to sent emails appear here</small>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = notifications.map(n => {
+    const cls     = n.classification || 'other';
+    const label   = CLS_LABELS[cls] || cls;
+    const preview = (n.reply_body || '').replace(/\s+/g, ' ').slice(0, 130);
+    const dot     = n.read ? '' : '<div class="ni-unread-dot"></div>';
+    return `<div class="ni ${n.read ? 'is-read' : ''}" onclick="openThread('${x(n.id)}')">
+      ${dot}
+      <div class="ni-head">
+        <span class="ni-company">${x(n.company)}</span>
+        <span class="cls-badge cls-${cls}">${label}</span>
+      </div>
+      <div class="ni-preview">${x(preview)}</div>
+      <div class="ni-meta">${x(n.reply_from)} · ${timeAgo(n.reply_at)}</div>
+    </div>`;
+  }).join('');
+}
+
+async function checkNow() {
+  const btn = document.getElementById('checkNowBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spin" style="border-color:rgba(0,0,0,.15);border-top-color:#0a0a0a;width:10px;height:10px;border-width:1.5px"></div> Checking…'; }
+  try {
+    const data = await api('POST', '/api/notifications/check');
+    notifications = data.notifications || [];
+    renderNotifBadge(data.unread || 0);
+    renderNotifList();
+    toast(data.new > 0 ? `${data.new} new repl${data.new === 1 ? 'y' : 'ies'}` : 'No new replies', data.new > 0 ? 'success' : 'info');
+  } catch (e) {
+    toast('Check failed: ' + e.message, 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Check now`;
+    }
+  }
+}
+
+async function markAllRead() {
+  await api('PUT', '/api/notifications/all/read').catch(() => {});
+  notifications.forEach(n => n.read = true);
+  renderNotifBadge(0);
+  renderNotifList();
+}
+
+function openThread(notifId) {
+  const notif = notifications.find(n => n.id === notifId);
+  if (!notif) return;
+
+  if (!notif.read) {
+    notif.read = true;
+    api('PUT', `/api/notifications/${encodeURIComponent(notifId)}/read`).catch(() => {});
+    renderNotifBadge(notifications.filter(n => !n.read).length);
+    renderNotifList();
+  }
+
+  renderThreadContent(notif);
+  document.getElementById('threadOverlay').style.display = 'flex';
+}
+
+function closeThread() {
+  document.getElementById('threadOverlay').style.display = 'none';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === e.currentTarget) closeThread();
+}
+
+function renderThreadContent(notif) {
+  const cls   = notif.classification || 'other';
+  const label = CLS_LABELS[cls] || cls;
+
+  const bodyHtml = x(notif.reply_body || '—').replace(/\n/g, '<br>');
+
+  const aiCard = notif.reason ? `
+    <div class="tm-ai-card">
+      <div class="tm-ai-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+        AI Analysis
+      </div>
+      <div class="tm-ai-reason">${x(notif.reason)}</div>
+      ${notif.suggested_action ? `<div class="tm-ai-action">→ ${x(notif.suggested_action)}</div>` : ''}
+    </div>` : '';
+
+  document.getElementById('threadContent').innerHTML = `
+    <div class="tm-head">
+      <div class="tm-head-left">
+        <div class="tm-company">${x(notif.company)}</div>
+        <span class="cls-badge cls-${cls}">${label}</span>
+      </div>
+      <button class="tm-close" onclick="closeThread()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="tm-body">
+      <div class="tm-email-card tm-outreach">
+        <div class="tm-card-label">Your outreach</div>
+        <div class="tm-card-subject">${x(notif.original_subject || '(no subject)')}</div>
+        <div class="tm-card-meta">To: ${x(notif.recipient_email)}</div>
+      </div>
+      <div class="tm-arrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+        </svg>
+        They replied
+      </div>
+      <div class="tm-email-card tm-reply">
+        <div class="tm-card-label">Their reply · ${x(notif.reply_at || '')}</div>
+        <div class="tm-card-subject">${x(notif.reply_subject || '(no subject)')}</div>
+        <div class="tm-card-meta">From: ${x(notif.reply_from)}</div>
+        <div class="tm-card-body">${bodyHtml}</div>
+      </div>
+      ${aiCard}
+    </div>
+  `;
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+    if (diff < 60)    return 'just now';
+    if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
+  } catch { return dateStr; }
+}
+
+/* Close panel on outside click */
+document.addEventListener('click', e => {
+  if (!notifOpen) return;
+  const panel = document.getElementById('notifPanel');
+  const btn   = document.getElementById('notifBtn');
+  if (panel && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
+    closeNotifPanel();
+  }
+});
+
+/* Poll every 5 minutes */
+setInterval(loadNotifications, 5 * 60 * 1000);
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 async function refreshQueue() {
   const data = await api('GET', '/api/queue');
   queue = data.queue;
@@ -1073,15 +1638,15 @@ async function api(method, url, body) {
 
 function x(v) {
   return String(v ?? '')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 let _toastTimer = null;
 function toast(msg, type = 'info') {
   const el = document.getElementById('toast');
   el.textContent = msg;
-  el.className = `show ${type}`;
+  el.className   = `show ${type}`;
   clearTimeout(_toastTimer);
   _toastTimer = setTimeout(() => { el.className = type; }, 3000);
 }
