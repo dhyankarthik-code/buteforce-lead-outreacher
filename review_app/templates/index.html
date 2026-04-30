@@ -592,7 +592,7 @@ kbd {
 .notes-in::placeholder { color: var(--text-3); }
 
 .action-bar {
-  height: 50px;
+  min-height: 50px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -600,9 +600,27 @@ kbd {
   border-top: 1px solid var(--border);
   background: var(--surface);
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .ab-spacer { flex: 1; }
+
+.gen-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+}
+
+.gen-status {
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-style: italic;
+  min-height: 13px;
+  letter-spacing: .01em;
+  padding-left: 2px;
+}
 
 /* ── Buttons ──────────────────────────────────────────────────────────────── */
 button {
@@ -1388,8 +1406,11 @@ function renderMain(item) {
                oninput="saveEdits()">
       </div>
       <div class="action-bar">
-        <button class="btn-reset"    onclick="resetLead()"  ${isSent ? 'disabled' : ''}>Reset</button>
-        <button class="btn-generate" id="btnGen" onclick="doGenerate()" ${isSent ? 'disabled' : ''}>${genLabel}</button>
+        <button class="btn-reset" onclick="resetLead()" ${isSent ? 'disabled' : ''}>Reset</button>
+        <div class="gen-wrap">
+          <button class="btn-generate" id="btnGen" onclick="doGenerate()" ${isSent ? 'disabled' : ''}>${genLabel}</button>
+          <span class="gen-status" id="genStatus"></span>
+        </div>
         <div class="ab-spacer"></div>
         <button class="btn-skip" onclick="doSkip()" ${isSent || isSkipped ? 'disabled' : ''}>Skip <span class="bk">S</span></button>
         <button class="btn-send" id="btnSend" onclick="doSend()" ${!hasContent || isSent || !hasEmail ? 'disabled' : ''}>${sendLabel}</button>
@@ -1431,36 +1452,75 @@ function toggleResearch() {
   if (chevron) chevron.classList.toggle('open', isOpen);
 }
 
+/* ── Status cycling ──────────────────────────────────────────────────────── */
+let _statusTimer = null;
+
+function _setStatus(msg) {
+  const el = document.getElementById('genStatus');
+  if (el) el.textContent = msg;
+}
+
+function _startCycle(steps, intervalMs = 2800) {
+  _setStatus(steps[0]);
+  let i = 0;
+  clearInterval(_statusTimer);
+  _statusTimer = setInterval(() => {
+    i = (i + 1) % steps.length;
+    _setStatus(steps[i]);
+  }, intervalMs);
+}
+
+function _stopCycle() {
+  clearInterval(_statusTimer);
+  _statusTimer = null;
+  _setStatus('');
+}
+
 /* ── Generate (two-stage: research → generate) ───────────────────────────── */
 async function doGenerate() {
   if (!current) return;
   const btn = document.getElementById('btnGen');
   if (!btn || btn.disabled) return;
   btn.disabled = true;
+  const co = current.company || 'company';
 
   // Stage 1 — research
   btn.innerHTML = '<div class="spin"></div> Researching…';
+  _startCycle([
+    `Searching "${co}" on the web…`,
+    `Scanning tech stack & tools…`,
+    `Looking for recent news & funding…`,
+    `Checking LinkedIn presence…`,
+    `Synthesising intel with AI…`,
+  ]);
   try {
     const res = await api('POST', `/api/research/${current.id}`);
     patchLocal({ research_brief: res.research_brief });
   } catch (e) {
-    // Research failure is non-fatal — log and continue to generate
     console.warn('Research skipped:', e.message);
   }
 
   // Stage 2 — generate
   btn.innerHTML = '<div class="spin"></div> Generating…';
+  _startCycle([
+    `Analysing research brief…`,
+    `Writing hook from intel…`,
+    `Crafting proof block…`,
+    `Matching requirements…`,
+    `Finalising email…`,
+  ]);
   try {
     const item = await api('POST', `/api/generate/${current.id}`);
+    _stopCycle();
     patchLocal(item);
     renderMain(item);
-    // Auto-expand research panel so operator can see what informed the email
     const body = document.getElementById('rpBody');
     const chevron = document.getElementById('rpChevron');
-    if (body) { body.classList.add('open'); }
-    if (chevron) { chevron.classList.add('open'); }
+    if (body) body.classList.add('open');
+    if (chevron) chevron.classList.add('open');
     toast('Email generated', 'success');
   } catch (e) {
+    _stopCycle();
     toast(e.message || 'Generation failed', 'error');
     const b = document.getElementById('btnGen');
     if (b) { b.disabled = false; b.innerHTML = 'Regenerate <span class="bk">G</span>'; }
