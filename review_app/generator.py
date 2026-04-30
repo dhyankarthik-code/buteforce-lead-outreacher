@@ -113,12 +113,41 @@ def _get_api_key() -> str:
     )
 
 
-def generate_email(lead: dict) -> dict:
+def _build_research_section(research: dict) -> str:
+    if not research:
+        return ""
+    parts = []
+    if research.get("company_overview"):
+        parts.append(f"OVERVIEW: {research['company_overview']}")
+    if research.get("what_they_build"):
+        parts.append(f"WHAT THEY BUILD: {research['what_they_build']}")
+    if research.get("tech_stack"):
+        parts.append(f"TECH STACK: {research['tech_stack']}")
+    if research.get("recent_signals"):
+        parts.append(f"RECENT SIGNALS: {research['recent_signals']}")
+    if research.get("pain_points"):
+        parts.append(f"PAIN POINTS: {research['pain_points']}")
+    if research.get("hook_angles"):
+        parts.append(
+            f"HOOK ANGLES — use one of these concrete observations for step 1:\n"
+            f"{research['hook_angles']}"
+        )
+    if not parts:
+        return ""
+    return (
+        "\n\nCOMPANY RESEARCH (use this to write a hyper-specific hook and tailor "
+        "the requirements match — do not make generic statements):\n"
+        + "\n\n".join(parts)
+    )
+
+
+def generate_email(lead: dict, research: dict | None = None) -> dict:
     client = genai.Client(api_key=_get_api_key())
     model = os.environ.get("GEMINI_MODEL", "gemini-2.5-pro")
 
     contact_line = lead["contact"] if lead["contact"] else "no named contact - address the team"
     gdpr_note = "YES - add GDPR opt-out footer" if lead.get("gdpr_flag") == "TRUE" else "NO"
+    research_section = _build_research_section(research or {})
 
     user_prompt = f"""Write a cold outreach email for this lead using the formula above.
 
@@ -131,11 +160,12 @@ Job type: {lead['job_type']}
 Project they hired for: {lead['project_name']}
 Job link (for reference): {lead['job_link']}
 Email will be sent to: {lead['email']}
-GDPR flag: {gdpr_note}
+GDPR flag: {gdpr_note}{research_section}
 
 INSTRUCTIONS:
 - Personalise the hook to THIS company's spend level, industry, and project specifics
-- Select only the 1-3 Buteforce projects that most directly overlap with their job type
+- If company research is provided above, ground the hook in one of the hook_angles — reference real specifics
+- Select only the 1-3 Buteforce projects that most directly overlap with their job type and tech stack
 - If no named contact, address the email to the team naturally (e.g. "Hi [Company] team,")
 - If GDPR flag is YES, append the GDPR footer after the sign-off
 - Return only the JSON object with "subject" and "body" keys

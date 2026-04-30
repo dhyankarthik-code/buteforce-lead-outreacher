@@ -27,8 +27,9 @@ from pydantic import BaseModel
 # Load .env from this directory
 load_dotenv(Path(__file__).parent / ".env")
 
-from generator import generate_email
-from mailer    import send_email
+from generator  import generate_email
+from mailer     import send_email
+from researcher import research_company
 
 if os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON"):
     from sheets_store import (
@@ -70,6 +71,23 @@ def get_lead(item_id: str):
     return item
 
 
+# ── Research ──────────────────────────────────────────────────────────────────
+
+@app.post("/api/research/{item_id}")
+def api_research(item_id: str):
+    item = get_item(item_id)
+    if not item:
+        raise HTTPException(404, f"Lead {item_id} not found")
+
+    try:
+        brief = research_company(item)
+    except Exception as exc:
+        raise HTTPException(500, f"Research failed: {exc}")
+
+    updated = update_item(item_id, {"research_brief": brief})
+    return {"research_brief": brief, "sources_count": brief.get("sources_count", 0), "item": updated}
+
+
 # ── Generate ──────────────────────────────────────────────────────────────────
 
 @app.post("/api/generate/{item_id}")
@@ -80,8 +98,10 @@ def api_generate(item_id: str):
     if not item.get("email"):
         raise HTTPException(400, "No email address for this lead — enrich first")
 
+    research = item.get("research_brief") or {}
+
     try:
-        result = generate_email(item)
+        result = generate_email(item, research=research if research else None)
     except RuntimeError as exc:
         raise HTTPException(500, str(exc))
     except Exception as exc:

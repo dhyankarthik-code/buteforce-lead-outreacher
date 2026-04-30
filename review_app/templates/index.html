@@ -705,6 +705,95 @@ button:focus-visible { box-shadow: 0 0 0 2px var(--yellow); }
 #toast.error   { background: var(--red-dim);   border: 1px solid rgba(220,38,38,.25); color: var(--red); }
 #toast.info    { background: var(--surface-2); border: 1px solid var(--border-2);    color: var(--text-2); }
 
+/* ── Research panel ───────────────────────────────────────────────────────── */
+.research-panel {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.rp-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .1s;
+}
+.rp-head:hover { background: var(--hover-tint); }
+
+.rp-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.rp-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--text-3);
+  flex: 1;
+}
+
+.rp-sources {
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: var(--mono);
+}
+
+.rp-chevron {
+  color: var(--text-3);
+  font-size: 10px;
+  transition: transform .18s;
+  flex-shrink: 0;
+}
+.rp-chevron.open { transform: rotate(180deg); }
+
+.rp-body {
+  padding: 0 20px 12px;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+.rp-body.open { display: flex; }
+
+.rp-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.rp-k {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--text-3);
+  width: 86px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.rp-v {
+  font-size: 11.5px;
+  color: var(--text-2);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.rp-row.rp-hooks .rp-k { color: #b89b00; }
+[data-theme="dark"] .rp-row.rp-hooks .rp-k { color: var(--yellow); }
+.rp-row.rp-hooks .rp-v {
+  color: var(--text);
+  background: var(--yellow-dim);
+  border: 1px solid rgba(255,252,1,.18);
+  border-radius: 5px;
+  padding: 6px 9px;
+  font-size: 11.5px;
+}
+
 /* ── Scrollbar ────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -1230,6 +1319,26 @@ function renderMain(item) {
   const genLabel  = hasContent ? `Regenerate <span class="bk">G</span>` : `Generate email <span class="bk">G</span>`;
   const sendLabel = isSent ? '&#10003; Sent' : `Approve &amp; Send <span class="bk">↵</span>`;
 
+  const brief = item.research_brief || {};
+  const hasBrief = !!(brief.company_overview || brief.hook_angles);
+  const researchHtml = hasBrief ? `
+    <div class="research-panel" id="researchPanel">
+      <div class="rp-head" onclick="toggleResearch()">
+        <span class="rp-icon">🔍</span>
+        <span class="rp-title">Company Research</span>
+        ${brief.sources_count ? `<span class="rp-sources">${brief.sources_count} sources</span>` : ''}
+        <span class="rp-chevron" id="rpChevron">▾</span>
+      </div>
+      <div class="rp-body" id="rpBody">
+        ${brief.hook_angles   ? `<div class="rp-row rp-hooks"><span class="rp-k">Hook angles</span><span class="rp-v">${x(brief.hook_angles)}</span></div>` : ''}
+        ${brief.company_overview ? `<div class="rp-row"><span class="rp-k">Overview</span><span class="rp-v">${x(brief.company_overview)}</span></div>` : ''}
+        ${brief.what_they_build  ? `<div class="rp-row"><span class="rp-k">What they build</span><span class="rp-v">${x(brief.what_they_build)}</span></div>` : ''}
+        ${brief.tech_stack       ? `<div class="rp-row"><span class="rp-k">Tech stack</span><span class="rp-v">${x(brief.tech_stack)}</span></div>` : ''}
+        ${brief.recent_signals   ? `<div class="rp-row"><span class="rp-k">Recent signals</span><span class="rp-v">${x(brief.recent_signals)}</span></div>` : ''}
+        ${brief.pain_points      ? `<div class="rp-row"><span class="rp-k">Pain points</span><span class="rp-v">${x(brief.pain_points)}</span></div>` : ''}
+      </div>
+    </div>` : '';
+
   document.getElementById('mainPanel').innerHTML = `
     <div class="lead-bar">
       <div class="lead-bar-top">
@@ -1244,6 +1353,7 @@ function renderMain(item) {
       </div>
     </div>
     ${alerts}
+    ${researchHtml}
     <div class="compose">
       <div class="email-header">
         <div class="eh-row">
@@ -1312,17 +1422,43 @@ function saveEdits() {
   }, 500);
 }
 
-/* ── Generate ─────────────────────────────────────────────────────────────── */
+/* ── Research panel toggle ────────────────────────────────────────────────── */
+function toggleResearch() {
+  const body    = document.getElementById('rpBody');
+  const chevron = document.getElementById('rpChevron');
+  if (!body) return;
+  const isOpen = body.classList.toggle('open');
+  if (chevron) chevron.classList.toggle('open', isOpen);
+}
+
+/* ── Generate (two-stage: research → generate) ───────────────────────────── */
 async function doGenerate() {
   if (!current) return;
   const btn = document.getElementById('btnGen');
   if (!btn || btn.disabled) return;
   btn.disabled = true;
+
+  // Stage 1 — research
+  btn.innerHTML = '<div class="spin"></div> Researching…';
+  try {
+    const res = await api('POST', `/api/research/${current.id}`);
+    patchLocal({ research_brief: res.research_brief });
+  } catch (e) {
+    // Research failure is non-fatal — log and continue to generate
+    console.warn('Research skipped:', e.message);
+  }
+
+  // Stage 2 — generate
   btn.innerHTML = '<div class="spin"></div> Generating…';
   try {
     const item = await api('POST', `/api/generate/${current.id}`);
     patchLocal(item);
     renderMain(item);
+    // Auto-expand research panel so operator can see what informed the email
+    const body = document.getElementById('rpBody');
+    const chevron = document.getElementById('rpChevron');
+    if (body) { body.classList.add('open'); }
+    if (chevron) { chevron.classList.add('open'); }
     toast('Email generated', 'success');
   } catch (e) {
     toast(e.message || 'Generation failed', 'error');
